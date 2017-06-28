@@ -15,7 +15,7 @@
 			uniform sampler2D _CameraDepthTexture;
 			uniform fixed _DepthLevel;
 			uniform int _KernelCount;
-			uniform float4x4 ipm;
+			uniform float4x4 inverseProjMat;
 
 			float rand(float3 co){
 			 	return frac(sin( dot(co.xyz ,float3(12.9898,78.233,45.5432) )) * 43758.5453);
@@ -36,7 +36,7 @@
 				depth = Linear01Depth(depth);
 				
 				float3 renderSpacePoint = float3(input.uv * 2 - 1, lerp(_ProjectionParams.y, _ProjectionParams.z, depth));
-				float3 viewSpacePoint = mul(ipm, renderSpacePoint);
+				float3 viewSpacePoint = mul(inverseProjMat, renderSpacePoint);
 				
 				//upcoming: Normale an dem errechneten Punkt
 

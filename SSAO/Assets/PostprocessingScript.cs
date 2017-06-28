@@ -6,12 +6,12 @@ using UnityEngine;
 public class PostprocessingScript : MonoBehaviour {
 
 	public Material mat;
-	Matrix4x4 ipm;
+	Matrix4x4 inverseProjMat;
 
 	void Start () {
 		GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
-		ipm = GL.GetGPUProjectionMatrix(GetComponent<Camera>().projectionMatrix, false).inverse;
-		mat.SetMatrix("ipm", ipm);
+		inverseProjMat = GL.GetGPUProjectionMatrix(GetComponent<Camera>().projectionMatrix, false).inverse;
+		mat.SetMatrix("inverseProjMat", inverseProjMat);
 	}
 	
 	void OnRenderImage(RenderTexture source, RenderTexture destination){
