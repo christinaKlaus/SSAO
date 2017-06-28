@@ -15,6 +15,7 @@
 			uniform sampler2D _CameraDepthTexture;
 			uniform fixed _DepthLevel;
 			uniform int _KernelCount;
+			uniform float4x4 ipm;
 
 			float rand(float3 co){
 			 	return frac(sin( dot(co.xyz ,float3(12.9898,78.233,45.5432) )) * 43758.5453);
@@ -29,14 +30,17 @@
 					float scale = (float)i/ (float)_KernelCount;
 					scale = lerp(0.1f, 1.0f, scale * scale);
 					kernel[i] *= scale;	
-				}
-				
-				
-				
+				}				
 
 				float depth = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, input.uv));
-				//depth = pow(Linear01Depth(depth), _DepthLevel);
-				return depth;
+				depth = Linear01Depth(depth);
+				
+				float3 renderSpacePoint = float3(input.uv * 2 - 1, lerp(_ProjectionParams.y, _ProjectionParams.z, depth));
+				float3 viewSpacePoint = mul(ipm, renderSpacePoint);
+				
+				//upcoming: Normale an dem errechneten Punkt
+
+				return viewSpacePoint.xyzz;
 			}
 			ENDCG
 		}
