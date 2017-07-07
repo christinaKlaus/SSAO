@@ -29,18 +29,19 @@
 					kernel[i] = normalize(kernel[i]);
 					float scale = (float)i/ (float)_KernelCount;
 					scale = lerp(0.1f, 1.0f, scale * scale);
-					kernel[i] *= scale;	
+					kernel[i] *= scale;
 				}				
 
 				float depth = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, input.uv));
 				depth = Linear01Depth(depth);
+				depth = _ProjectionParams.y + depth * (_ProjectionParams.z - _ProjectionParams.y);
 				
 				float3 renderSpacePoint = float3(input.uv * 2 - 1, lerp(_ProjectionParams.y, _ProjectionParams.z, depth));
 				float3 viewSpacePoint = mul(inverseProjMat, renderSpacePoint);
 				
 				//upcoming: Normale an dem errechneten Punkt
-
-				return viewSpacePoint.xyzz;
+				//return depth.xxxx;
+				return renderSpacePoint.xyzz;
 			}
 			ENDCG
 		}
