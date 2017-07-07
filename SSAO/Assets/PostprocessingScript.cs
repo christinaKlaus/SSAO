@@ -5,17 +5,22 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class PostprocessingScript : MonoBehaviour {
 
-	public Material mat;
+	[SerializeField] Material ssao;
+	[SerializeField] Material blur;
+
 	Matrix4x4 inverseProjMat;
 
 	void Start () {
 		GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
 		inverseProjMat = GL.GetGPUProjectionMatrix(GetComponent<Camera>().projectionMatrix, false).inverse;
-		mat.SetMatrix("inverseProjMat", inverseProjMat);
+		ssao.SetMatrix("inverseProjMat", inverseProjMat);
 	}
 	
 	void OnRenderImage(RenderTexture source, RenderTexture destination){
-		Graphics.Blit(source, destination, mat);
+		//RenderTexture temp = RenderTexture.GetTemporary(source.width, source.height, source.depth, source.format);
+		Graphics.Blit(source, destination, ssao);
+		
+		//Graphics.Blit(temp, destination, blur);
 	}
 
 }
