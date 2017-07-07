@@ -1,7 +1,7 @@
 ﻿Shader "Postprocessing" {
 	Properties {
 		_MainTex ("Base (RGB)", 2D) = "white" {}
-		_KernelCount ("Kernel Count", int) = 0
+		_KernelCount ("Kernel Count", float) = 0
 		_KernelSize ("Kernel Size", Range(0, 1)) = 1
 	}
 	SubShader {
