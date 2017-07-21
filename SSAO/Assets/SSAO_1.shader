@@ -1,4 +1,4 @@
-﻿Shader "Postprocessing" {
+﻿Shader "Postprocessing/SSAO_1" {
 	Properties {
 		_MainTex ("Base (RGB)", 2D) = "white" {}
 		_KernelCount ("Kernel Count", float) = 0
