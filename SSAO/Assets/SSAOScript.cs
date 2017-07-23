@@ -12,7 +12,7 @@ public class SSAOScript : MonoBehaviour
     [SerializeField] float kernelLength = 1;
     [SerializeField] bool occlusionOnly = false;
     [SerializeField] bool updateEveryFrame = false;
-    [SerializeField] [Range(0, 1)] float intensity;
+    [SerializeField] [Range(0, 2)] float intensity;
 
     int cachedKS = 64;
     int cachedNSS = 4;

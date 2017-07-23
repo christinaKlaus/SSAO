@@ -56,6 +56,11 @@
 				float depth;
 				float3 normal;
 				readDepthNormals(input.uv, depth, normal);
+				
+				normal.z *= -1;
+				normal.y *= -1;
+				normal.x *= -1;
+				//return normal.xyzz;
 
 				//render depth
 				//return input.uv.xyxy;
@@ -63,9 +68,10 @@
 				float4 renderSpacePoint = float4(input.uv * 2 - 1, depth, 1);
 				//position of the fragment in viewSpace
 				float4 origin = mul(inverseProjMat, renderSpacePoint);
-				origin.z = depth;
+				//origin.z = depth;
 
-				//return origin.xyzy;
+				//return origin.xyxy;
+				//return abs(length(origin)-2) < 1 ? 1 : 0;
 
 				int2 pixelPos = input.uv * _ScreenParams.xy;
 				uint noisePos = (pixelPos.x % _NoiseSqrtSize) + (pixelPos.y % _NoiseSqrtSize) * _NoiseSqrtSize;
@@ -103,19 +109,20 @@
 					//return float4(kernelDepth.xxx, 1);
 
 					//occlude
-					float rangeCheck = 1;//abs(origin.z - kernelDepth) < _KernelLength ? 1 : 0;
+					float rangeCheck = abs(origin.z - kernelDepth) < _KernelLength ? 1 : 0;
 					
-					occlusion += (kernelDepth >= kernelPos.z ? 1 : 0) * rangeCheck;
+					occlusion += (kernelDepth <= kernelPos.z ? 1 : 0) * rangeCheck;
 				}
 				float darkness = 1.0 - (occlusion / _KernelSize);
 				return float4(darkness, darkness, darkness, 1);
 			}
 			ENDCG
 		}
-
+		
 		GrabPass{ "_UnBlurred" }
-
+		
 		//BoxBlur
+		
 		Pass {
 			CGPROGRAM
 			#pragma vertex vert
@@ -125,7 +132,7 @@
 
 			sampler2D _UnBlurred;
 			sampler2D _MainTex;
-			int _NoiseSqrtSize = 8;
+			uint _NoiseSqrtSize = 8;
 			uint _OcclusionOnly = false;
 			uniform float _Intensity = 1;
 			
@@ -152,18 +159,19 @@
 			float4 frag(v2f input) : COLOR {
 				float2 texelSize = _ScreenParams.zw -1;
 				float result = 0;
-				float hlim = -_NoiseSqrtSize * 0.5 + 0.5;
-				for(int i=0;i<_NoiseSqrtSize*_NoiseSqrtSize;i++){
+				float hlim = -(float)_NoiseSqrtSize * 0.5 + 0.5;
+				for(uint i=0;i<_NoiseSqrtSize*_NoiseSqrtSize;i++){
 					float2 offset = (float2(i%_NoiseSqrtSize, floor(i/_NoiseSqrtSize)) + hlim) * texelSize;
 					result += tex2D(_UnBlurred, input.grab_uv + offset).r;
 				}
 				float darkness = result / (_NoiseSqrtSize * _NoiseSqrtSize);
 				if(_OcclusionOnly)
 					return darkness;
-				darkness = lerp(1, darkness, _Intensity);
+				//darkness = lerp(1, darkness, _Intensity);
+				darkness = pow(darkness, _Intensity);
 				return darkness * tex2D(_MainTex, input.uv);
 			}
 			ENDCG
-		}
+		}//*/
 	}
 }
