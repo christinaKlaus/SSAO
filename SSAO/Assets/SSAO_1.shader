@@ -109,9 +109,10 @@
 					//return float4(kernelDepth.xxx, 1);
 
 					//occlude
-					float rangeCheck = abs(origin.z - kernelDepth) < _KernelLength ? 1 : 0;
+					float rangeCheck =  abs(depth - kernelDepth) < _KernelLength ? 1 : 0;
+					if(depth >= _ProjectionParams.z) rangeCheck = 0;
 					
-					occlusion += (kernelDepth <= kernelPos.z ? 1 : 0) * rangeCheck;
+					occlusion += (kernelDepth <= kernelScreenPos.z ? 1 : 0) * rangeCheck;
 				}
 				float darkness = 1.0 - (occlusion / _KernelSize);
 				return float4(darkness, darkness, darkness, 1);
