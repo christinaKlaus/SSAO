@@ -142,9 +142,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ssao: {fileID: 2100000, guid: b5236c39723d8664cb2c0613a84444b5, type: 2}
   kernelSize: 32
-  noiseSqrtSize: 4
-  kernelLength: 0.5
-  occlusionOnly: 1
+  noiseSqrtSize: 8
+  kernelLength: 3.07
+  occlusionOnly: 0
   updateEveryFrame: 1
 --- !u!81 &124960743
 AudioListener:
@@ -184,7 +184,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 20
+  far clip plane: 100
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -209,13 +209,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 124960741}
-  m_LocalRotation: {x: 0.16670997, y: 0.22403017, z: -0.01641344, w: 0.9600775}
-  m_LocalPosition: {x: -1.88, y: 3, z: -8.58}
+  m_LocalRotation: {x: 0.16207111, y: 0.3718839, z: -0.04236564, w: 0.9130392}
+  m_LocalPosition: {x: -6.93, y: 3.64, z: -10.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 19.115002, y: 26.711, z: 2.6190002}
+  m_LocalEulerAnglesHint: {x: 19.115002, y: 44.764004, z: 2.6190002}
 --- !u!1 &174789487
 GameObject:
   m_ObjectHideFlags: 0

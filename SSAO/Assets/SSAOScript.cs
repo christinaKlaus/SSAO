@@ -12,11 +12,13 @@ public class SSAOScript : MonoBehaviour
     [SerializeField] float kernelLength = 1;
     [SerializeField] bool occlusionOnly = false;
     [SerializeField] bool updateEveryFrame = false;
+    [SerializeField] [Range(0, 1)] float intensity;
 
     int cachedKS = 64;
     int cachedNSS = 4;
     float cachedKL = 1;
     bool cachedOO = false;
+    float cachedI = 1;
 
     Matrix4x4 inverseProjMat;
     Matrix4x4 projMat;
@@ -55,6 +57,7 @@ public class SSAOScript : MonoBehaviour
         ssao.SetVectorArray("_Noise", noise);
 
         ssao.SetFloat("_KernelLength", kernelLength);
+        ssao.SetFloat("_Intensity", intensity);
 
         ssao.SetInt("_OcclusionOnly", occlusionOnly ? 1 : 0);
 
@@ -62,6 +65,7 @@ public class SSAOScript : MonoBehaviour
         cachedKS = kernelSize;
         cachedNSS = noiseSqrtSize;
         cachedOO = occlusionOnly;
+        cachedI = intensity;
     }
 
     void Update(){
@@ -69,6 +73,7 @@ public class SSAOScript : MonoBehaviour
                 kernelSize != cachedKS || 
                 noiseSqrtSize != cachedNSS || 
                 occlusionOnly != cachedOO || 
+                intensity != cachedI ||
                 updateEveryFrame)
             Awake();
     }
