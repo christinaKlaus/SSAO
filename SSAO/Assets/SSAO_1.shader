@@ -14,7 +14,6 @@
 
 			#include "UnityCG.cginc"
 
-			sampler2D _MainTex;
 			sampler2D _CameraDepthNormalsTexture;
 			uniform float _KernelLength;
 
@@ -57,21 +56,19 @@
 				float3 normal;
 				readDepthNormals(input.uv, depth, normal);
 				
-				normal.z *= -1;
-				normal.y *= -1;
-				normal.x *= -1;
+				normal *= -1;
 				//return normal.xyzz;
 
 				//render depth
 				//return input.uv.xyxy;
 				
-				float4 renderSpacePoint = float4(input.uv * 2 - 1, depth, 1);
+				float4 screenSpacePos = float4(input.uv * 2 - 1, depth, 1);
 				//position of the fragment in viewSpace
-				float4 origin = mul(inverseProjMat, renderSpacePoint);
-				//origin.z = depth;
+				float4 viewSpacePos = mul(inverseProjMat, screenSpacePos);
+				//viewSpacePos.z = depth;
 
-				//return origin.xyxy;
-				//return abs(length(origin)-2) < 1 ? 1 : 0;
+				//return viewSpacePos.xyxy;
+				//return abs(length(viewSpacePos)-2) < 1 ? 1 : 0;
 
 				int2 pixelPos = input.uv * _ScreenParams.xy;
 				uint noisePos = (pixelPos.x % _NoiseSqrtSize) + (pixelPos.y % _NoiseSqrtSize) * _NoiseSqrtSize;
@@ -90,39 +87,36 @@
 				for(uint i = 0; i < _KernelSize; i++){
 					
 					//rotate the kernel around the matrix and get the viewspace position
-					float4 kernelPos = float4(mul(rotMat, _Kernel[i]) * _KernelLength, 1);
-					kernelPos = kernelPos + origin;
+					float4 kernelPos = float4(mul(rotMat, _Kernel[i]) * _KernelLength + normal * 0.2, 1);
+					kernelPos = kernelPos + viewSpacePos;
 
-					float4 kernelScreenPos = float4(kernelPos);
-					kernelScreenPos = mul(projMat, kernelScreenPos);
+					float4 kernelScreenPos = mul(projMat, kernelPos);
 					//kernelScreenPos.xy /= kernelScreenPos.w;
 					kernelScreenPos.xy = (kernelScreenPos.xy + 1) / 2;
 					//return kernelScreenPos.x > 1 || kernelScreenPos.y > 1 ? 1 : 0;
 					//return float4(kernelScreenPos.xy,0, 1);
 
 					//get the sample depth
-					float kernelDepth;
+					float kernelPosDepthBufferValue;
 					float3 tmpNormal;
-					readDepthNormals(kernelScreenPos.xy, kernelDepth, tmpNormal);
+					readDepthNormals(kernelScreenPos.xy, kernelPosDepthBufferValue, tmpNormal);
 
-					//return float4(renderSpacePoint.xy,0,1);
-					//return float4(kernelDepth.xxx, 1);
+					//return float4(screenSpacePos.xy,0,1);
+					//return float4(kernelPosDepthBufferValue.xxx, 1);
 
 					//occlude
-					float rangeCheck =  abs(depth - kernelDepth) < _KernelLength ? 1 : 0;
-					if(depth >= _ProjectionParams.z) rangeCheck = 0;
+					float rangeCheck =  abs(depth - kernelPosDepthBufferValue) < _KernelLength ? 1 : 0;
+					rangeCheck = (depth >= _ProjectionParams.z) ? 0 : rangeCheck;
 					
-					occlusion += (kernelDepth <= kernelScreenPos.z ? 1 : 0) * rangeCheck;
+					occlusion += (kernelPosDepthBufferValue <= kernelScreenPos.z ? 1 : 0) * rangeCheck;
 				}
 				float darkness = 1.0 - (occlusion / _KernelSize);
 				return float4(darkness, darkness, darkness, 1);
 			}
 			ENDCG
 		}
-		
+		/*
 		GrabPass{ "_UnBlurred" }
-		
-		//BoxBlur
 		
 		Pass {
 			CGPROGRAM
@@ -160,9 +154,10 @@
 			float4 frag(v2f input) : COLOR {
 				float2 texelSize = _ScreenParams.zw -1;
 				float result = 0;
-				float hlim = -(float)_NoiseSqrtSize * 0.5 + 0.5;
+				float offsetStart = -(float)_NoiseSqrtSize * 0.5 + 0.5;
 				for(uint i=0;i<_NoiseSqrtSize*_NoiseSqrtSize;i++){
-					float2 offset = (float2(i%_NoiseSqrtSize, floor(i/_NoiseSqrtSize)) + hlim) * texelSize;
+					int2 index = int2(i%_NoiseSqrtSize, floor(i/_NoiseSqrtSize));
+					float2 offset = (index + offsetStart) * texelSize;
 					result += tex2D(_UnBlurred, input.grab_uv + offset).r;
 				}
 				float darkness = result / (_NoiseSqrtSize * _NoiseSqrtSize);

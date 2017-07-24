@@ -67,5 +67,62 @@
 			}
 			ENDCG
 		}
+		/*
+		GrabPass{ "_UnBlurred" }
+		
+		Pass {
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+
+			#include "UnityCG.cginc"
+
+			sampler2D _UnBlurred;
+			sampler2D _MainTex;
+			uint _NoiseSqrtSize = 4;
+			uint _occlusionOnly = false;
+			uniform float _Intensity = 1;
+			
+			struct appdata{
+				float4 vertex : POSITION;
+				float2 uv : TEXCOORD0;
+			};
+
+			struct v2f{
+				float4 vertex : SV_POSITION;
+				float2 uv : TEXCOORD0;
+				float2 grab_uv : TEXCOORD1;
+			};
+
+			v2f vert (appdata v){
+				v2f o;
+				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.uv = v.uv;
+				o.grab_uv = v.uv;
+				o.grab_uv.y = 1 - o.grab_uv.y;
+				return o;
+			}
+
+			float4 frag(v2f input) : COLOR {
+				float2 texelSize = _ScreenParams.zw -1;
+				float result = 0;
+				float offsetStart = -(float)_NoiseSqrtSize * 0.5 + 0.5;
+				//[UnRoll]
+				for(uint i=0;i<_NoiseSqrtSize*_NoiseSqrtSize;i++){
+					//return tex2D(_UnBlurred, input.grab_uv);
+					float2 index = float2(i%_NoiseSqrtSize, floor(i/_NoiseSqrtSize));
+					float2 offset = (index + offsetStart) * texelSize;
+					result += tex2D(_UnBlurred, input.grab_uv + offset).r;
+				}
+				//return tex2D(_UnBlurred, input.grab_uv);
+				float darkness = result / (_NoiseSqrtSize * _NoiseSqrtSize);
+				if(_occlusionOnly)
+					return darkness;
+				//darkness = lerp(1, darkness, _Intensity);
+				darkness = pow(darkness, _Intensity);
+				return darkness * tex2D(_MainTex, input.uv);
+			}
+			ENDCG
+		}//*/
 	}
 }

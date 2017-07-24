@@ -52,7 +52,6 @@ public class SSAOScript : MonoBehaviour
             noise[i] = new Vector4(Random.Range(-1, 1), Random.Range(-1, 1), 0, 1);
             noise[i].Normalize();
         }
-        print(noiseSqrtSize);
         ssao.SetInt("_NoiseSqrtSize", noiseSqrtSize);
         ssao.SetVectorArray("_Noise", noise);
 

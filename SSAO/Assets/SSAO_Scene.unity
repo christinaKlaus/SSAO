@@ -42,7 +42,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 9
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 8
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 1024
@@ -88,7 +88,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 112000002, guid: bc0b68102c91041898238d3edd7b2071,
     type: 2}
-  m_UseShadowmask: 1
+  m_ShadowMaskMode: 2
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 124960744}
   - component: {fileID: 124960743}
   - component: {fileID: 124960742}
+  - component: {fileID: 124960748}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -135,16 +136,16 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 124960741}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 317babdcbe1fc0b45a3e8bd5e138f75f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ssao: {fileID: 2100000, guid: b5236c39723d8664cb2c0613a84444b5, type: 2}
-  kernelSize: 256
-  noiseSqrtSize: 2
+  kernelSize: 367
+  noiseSqrtSize: 4
   kernelLength: 1
-  occlusionOnly: 0
+  occlusionOnly: 1
   updateEveryFrame: 0
   intensity: 1
 --- !u!81 &124960743
@@ -217,6 +218,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 14.151001, y: 29.372002, z: -2.253}
+--- !u!114 &124960748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 124960741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a4a57a33d8787f4babc73577ddca5ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ssao: {fileID: 2100000, guid: d596b96401e4fe04fb65286d59dd5c96, type: 2}
 --- !u!1 &174789487
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,20 +278,6 @@ Light:
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_FalloffTable:
-    m_Table[0]: 0
-    m_Table[1]: 0
-    m_Table[2]: 0
-    m_Table[3]: 0
-    m_Table[4]: 0
-    m_Table[5]: 0
-    m_Table[6]: 0
-    m_Table[7]: 0
-    m_Table[8]: 0
-    m_Table[9]: 0
-    m_Table[10]: 0
-    m_Table[11]: 0
-    m_Table[12]: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
