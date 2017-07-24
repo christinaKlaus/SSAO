@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.45588237, g: 0.45588237, b: 0.45588237, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientIntensity: 0.64
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
@@ -138,16 +138,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 124960741}
   m_Enabled: 0
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 317babdcbe1fc0b45a3e8bd5e138f75f, type: 3}
+  m_Script: {fileID: 11500000, guid: 689c8fee8f281b141ad44e5b50477eab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ssao: {fileID: 2100000, guid: b5236c39723d8664cb2c0613a84444b5, type: 2}
-  kernelSize: 367
-  noiseSqrtSize: 4
-  kernelLength: 1
-  occlusionOnly: 1
-  updateEveryFrame: 0
-  intensity: 1
+  m_Radius: 0.4
+  m_SampleCount: 1
+  m_OcclusionIntensity: 1.5
+  m_Blur: 2
+  m_Downsampling: 2
+  m_OcclusionAttenuation: 1
+  m_MinZ: 0.01
+  m_SSAOShader: {fileID: 4800000, guid: 6ac6a30032a4a4743932c6e8f7948201, type: 3}
+  m_RandomTexture: {fileID: 2800000, guid: c0112e6c01f02bb44bab9aec7439c108, type: 3}
 --- !u!81 &124960743
 AudioListener:
   m_ObjectHideFlags: 0
@@ -288,13 +290,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 174789487}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: -6.8}
+  m_LocalRotation: {x: 0.28812277, y: -0.14357352, z: 0.12004037, w: 0.9391285}
+  m_LocalPosition: {x: 0, y: 3, z: -9.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 35.144, y: -14.193001, z: 10.053}
 --- !u!1 &856498261
 GameObject:
   m_ObjectHideFlags: 0
