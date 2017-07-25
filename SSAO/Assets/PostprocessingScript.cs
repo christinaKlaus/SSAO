@@ -10,7 +10,7 @@ public class PostprocessingScript : MonoBehaviour {
 	Matrix4x4 inverseProjMat;
 
 	void Awake () {
-		GetComponent<Camera>().depthTextureMode = DepthTextureMode.DepthNormals;
+		GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
 		inverseProjMat = GL.GetGPUProjectionMatrix(GetComponent<Camera>().projectionMatrix, false).inverse;
 		ssao.SetMatrix("inverseProjMat", inverseProjMat);
 	}
