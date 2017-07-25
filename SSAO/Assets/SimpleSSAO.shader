@@ -17,7 +17,7 @@
 			//use frag as a fragment shader
 			#pragma fragment frag
 
-			//samples in 1 kernel
+			//amount of samples in kernel
 			#define SAMPLE_COUNT 64
 			//size of the width/height of the noise pattern
 			#define NOISE_SIZE 4
@@ -27,10 +27,8 @@
 
 			//maximum radius of the kernel
 			uniform float _KernelRadius = 1;
-			//maximum radius of the kernel
+			//maximum difference before a depth read is considered too far away from the fragment depth
 			uniform float _DepthFilterThreshold = 1;
-			//how actively to actually occlude
-			uniform float _AttenuationPower = 1;
 
 			//random kernel samples
 			uniform float4 _Samples[SAMPLE_COUNT];
@@ -66,20 +64,19 @@
 					//randomize the sample to minimize banding
 					float4 randomizedSample = reflect(_Samples[i], noise);
 					
-					//offset in screenspace
-					float2 uvOffset = randomizedSample.xy * scale;
-					//the depth of the point tested
+					//screenspace uv position of the sample
+					float2 sampleUV = input.uv + randomizedSample.xy * scale;
+					//the compared depth of the sample tested
 					float sampleTestDepth = depth - (randomizedSample.z * _KernelRadius);
 					
 					//get the depth of the sample in the buffer
-					float sampleBufferDepth = tex2D(_CameraDepthTexture, input.uv + uvOffset);
+					float sampleBufferDepth = tex2D(_CameraDepthTexture, sampleUV);
 					sampleBufferDepth = Linear01Depth(sampleBufferDepth) * _ProjectionParams.z;
 
-					//get the difference from the test depth to the actual depth in the buffer
-					float sampleTestToBufferDifference = sampleTestDepth - sampleBufferDepth;
-
-					float depthTest = abs(depth - sampleBufferDepth) > _DepthFilterThreshold || depth == _ProjectionParams.z ? 0 : 1;
-					occlusion += ((sampleTestToBufferDifference>0)?1:0) * depthTest;
+					//test if the difference of sample depth where we test it to the depth in the z buffer is too big to consider it occluding
+					float depthTest = abs(sampleTestDepth - sampleBufferDepth) > _DepthFilterThreshold || depth == _ProjectionParams.z ? 0 : 1;
+					//if the depth of the sample in the buffer is before the test location, occlude, do not occlude if not the case
+					occlusion += ((sampleTestDepth - sampleBufferDepth>0)?1:0) * depthTest;
 				}
 				//get the occlusion to a scale between 0 and 1
 				occlusion /= SAMPLE_COUNT;
